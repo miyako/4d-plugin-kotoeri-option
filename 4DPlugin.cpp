@@ -54,31 +54,34 @@ void Kotoeri_Get_option(sLONG_PTR *pResult, PackagePtr pParams)
 
 	Param1.fromParamAtIndex(pParams, 1);
 
-    NSString *key = Param1.copyUTF16String();
-    
-    CFPropertyListRef value = CFPreferencesCopyAppValue((CFStringRef)key, kotoeri_app_id);
+    @autoreleasepool {
 
-    if(value){
-        
-        if(CFGetTypeID(value) == CFStringGetTypeID()){
-        
-            returnValue.setUTF16String((NSString *)value);
-            
-        }else if(CFGetTypeID(value) == CFNumberGetTypeID()){
-        
-            returnValue.setUTF16String([(NSNumber *)value stringValue]);
-        
-        }else if(CFGetTypeID(value) == CFBooleanGetTypeID()){
-        
-            returnValue.setUTF16String([[NSNumber numberWithBool:CFBooleanGetValue((CFBooleanRef)value)]stringValue]);
-        
+        NSString *key = Param1.copyUTF16String();
+
+        CFPropertyListRef value = CFPreferencesCopyAppValue((CFStringRef)key, kotoeri_app_id);
+
+        if(value){
+
+            if(CFGetTypeID(value) == CFStringGetTypeID()){
+
+                returnValue.setUTF16String((NSString *)value);
+
+            }else if(CFGetTypeID(value) == CFNumberGetTypeID()){
+
+                returnValue.setUTF16String([(NSNumber *)value stringValue]);
+
+            }else if(CFGetTypeID(value) == CFBooleanGetTypeID()){
+
+                returnValue.setUTF16String([[NSNumber numberWithBool:CFBooleanGetValue((CFBooleanRef)value)]stringValue]);
+
+            }
+
+            CFRelease(value);
         }
-        
-        CFRelease(value);
+
+        [key release];
     }
 
-    [key release];
-    
 	returnValue.setReturn(pResult);
 }
 
@@ -92,62 +95,71 @@ void Kotoeri_SET_OPTION(sLONG_PTR *pResult, PackagePtr pParams)
 	Param2.fromParamAtIndex(pParams, 2);
 	Param3.fromParamAtIndex(pParams, 3);
 
-    NSString *key = Param1.copyUTF16String();
-    NSString *value = Param2.copyUTF16String();
-            
-    switch(Param3.getIntValue()){
-    
-        case TYPE_Is_text:
-        case TYPE_Is_string:  
-        case TYPE_Is_alpha:  
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFStringRef)value,
-            kotoeri_app_id);            
-        break;
-        
-        case TYPE_Is_long:   
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFNumberRef)[NSNumber numberWithLongLong:[value longLongValue]],
-            kotoeri_app_id);
-        break;  
-                    
-        case TYPE_Is_int:   
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFNumberRef)[NSNumber numberWithInt:[value intValue]],
-            kotoeri_app_id);
-        break;   
-        
-        case TYPE_Is_short:
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFNumberRef)[NSNumber numberWithInteger:[value integerValue]],
-            kotoeri_app_id);
-        break;                                
-        
-        case TYPE_Is_real: 
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFNumberRef)[NSNumber numberWithDouble:[value doubleValue]],
-            kotoeri_app_id);
-        break;              
-        
-        case TYPE_Is_boolean:   
-            CFPreferencesSetAppValue(
-            (CFStringRef)key, 
-            (CFNumberRef)[NSNumber numberWithBool:[value boolValue]],
-            kotoeri_app_id);
-        break;  
-        
-    }
+    @autoreleasepool {
 
-    [value release];        
-    [key release];
-    
-    if(!CFPreferencesAppSynchronize(kotoeri_app_id)){
-        NSLog(@"Kotoeri Option[4D]:%@", @"Failed to updated com.apple.inputmethod.Kotoeri.plist");
+        NSString *key = Param1.copyUTF16String();
+        NSString *value = Param2.copyUTF16String();
+
+        bool isSet = true;
+
+        switch(Param3.getIntValue()){
+
+            case TYPE_Is_text:
+            case TYPE_Is_string:
+            case TYPE_Is_alpha:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFStringRef)value,
+                kotoeri_app_id);
+            break;
+
+            case TYPE_Is_long:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFNumberRef)[NSNumber numberWithLongLong:[value longLongValue]],
+                kotoeri_app_id);
+            break;
+
+            case TYPE_Is_int:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFNumberRef)[NSNumber numberWithInt:[value intValue]],
+                kotoeri_app_id);
+            break;
+
+            case TYPE_Is_short:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFNumberRef)[NSNumber numberWithInteger:[value integerValue]],
+                kotoeri_app_id);
+            break;
+
+            case TYPE_Is_real:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFNumberRef)[NSNumber numberWithDouble:[value doubleValue]],
+                kotoeri_app_id);
+            break;
+
+            case TYPE_Is_boolean:
+                CFPreferencesSetAppValue(
+                (CFStringRef)key,
+                (CFNumberRef)[NSNumber numberWithBool:[value boolValue]],
+                kotoeri_app_id);
+            break;
+
+            default:
+                isSet = false;
+                NSLog(@"Kotoeri Option[4D]:unsupported value type %d for key %@", (int)Param3.getIntValue(), key);
+            break;
+        }
+
+        [value release];
+        [key release];
+
+        if(isSet && !CFPreferencesAppSynchronize(kotoeri_app_id)){
+            NSLog(@"Kotoeri Option[4D]:%@", @"Failed to updated com.apple.inputmethod.Kotoeri.plist");
+        }
     }
 
 }
