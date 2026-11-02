@@ -103,8 +103,14 @@ jobs:
           set -euo pipefail
           BUNDLE_PATH="${{ env.PRODUCT_NAME }}.4dbase/Plugins/${{ env.PRODUCT_NAME }}.bundle"
           BIN="$BUNDLE_PATH/Contents/MacOS/${{ env.PRODUCT_NAME }}"
-          lipo -info "$BIN"
-          lipo -info "$BIN" | grep -q "arm64" && lipo -info "$BIN" | grep -q "x86_64"
+          ARCHS_FOUND=$(lipo -archs "$BIN")
+          echo "Architectures: $ARCHS_FOUND"
+          for ARCH in arm64 x86_64; do
+            if ! grep -qw "$ARCH" <<< "$ARCHS_FOUND"; then
+              echo "Missing $ARCH in $BIN" >&2
+              exit 1
+            fi
+          done
           echo "BUNDLE_PATH=$BUNDLE_PATH" >> "$GITHUB_ENV"
 
       - name: codesign
