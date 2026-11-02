@@ -1,7 +1,7 @@
-# Builds the plugin for Windows (x64) first, then macOS as a universal
-# (arm64 + x86_64) binary, merges both into the single cross-platform
-# .bundle, codesigns + notarizes the mac binary, and publishes a GitHub
-# Release with the zip and dmg attached.
+# Builds the plugin for macOS as a universal (arm64 + x86_64) binary
+# (the plugin is macOS-only; there is no Windows build), codesigns +
+# notarizes the .bundle, and publishes a GitHub Release with the zip and
+# dmg attached.
 #
 # Trigger: push a tag matching v*.*.* (either by hand, or via bump-version.yml).
 # You can also run it manually against an existing tag with workflow_dispatch.
@@ -25,7 +25,6 @@ env:
   # ---- edit these per-project, everything else is generic ----
   PRODUCT_NAME: Kotoeri Option
   XCODE_PROJECT: Kotoeri Option.xcodeproj
-  VCX_SOLUTION: Kotoeri Option.sln
   MACOS_DEPLOYMENT_TARGET: '11.0'
   # --------------------------------------------------------------
 
@@ -125,7 +124,7 @@ jobs:
           ZIP_PATH="${{ env.PRODUCT_NAME }}-${VERSION}.zip"
           DMG_PATH="${{ env.PRODUCT_NAME }}-${VERSION}.dmg"
 
-          # zip: cross-platform bundle (win + mac binaries together), what most users grab
+          # zip: the .bundle as-is, what most users grab
           ditto -c -k --keepParent "$BUNDLE_PATH" "$ZIP_PATH"
 
           # dmg: mac-friendly, and the only format Apple lets us staple a ticket to
