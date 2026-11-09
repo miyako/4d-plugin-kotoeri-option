@@ -1,0 +1,4 @@
+﻿/* Stable source parser fixture. */
+CFBundleName = "Kotoeri Option";
+CFBundleShortVersionString = "2.3.4";
+CFBundleGetInfoString = "Kotoeri Option version 2.3.4, Copyright 2015 miyako.";
