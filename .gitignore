@@ -1,6 +1,8 @@
 # Xcode intermediates (OBJROOT)
 build/
 
+__pycache__/
+
 # built by Xcode / CI, never committed
 Kotoeri Option.4dbase/Plugins/Kotoeri Option.bundle/Contents/MacOS/
 Kotoeri Option.4dbase/Plugins/Kotoeri Option.bundle/Contents/_CodeSignature/

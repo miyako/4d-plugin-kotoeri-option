@@ -1,0 +1,15 @@
+// Parser fixture: the three coordinated project configurations.
+{
+    Debug = {
+        MARKETING_VERSION = 2.3.4;
+        CURRENT_PROJECT_VERSION = 2.3.4;
+    };
+    Release = {
+        MARKETING_VERSION = 2.3.4;
+        CURRENT_PROJECT_VERSION = 2.3.4;
+    };
+    Default = {
+        MARKETING_VERSION = 2.3.4;
+        CURRENT_PROJECT_VERSION = 2.3.4;
+    };
+}

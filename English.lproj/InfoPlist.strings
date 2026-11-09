@@ -1,1 +1,5 @@
-﻿/* Localized versions of Info.plist keys */CFBundleName = "Kotoeri Option";CFBundleShortVersionString = "1.0";CFBundleGetInfoString = "Kotoeri Option version 1.0, Copyright 2015 miyako.";
+﻿/* Localized versions of Info.plist keys */
+
+CFBundleName = "Kotoeri Option";
+CFBundleShortVersionString = "1.0.2";
+CFBundleGetInfoString = "Kotoeri Option version 1.0.2, Copyright 2015 miyako.";
